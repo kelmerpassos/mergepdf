@@ -10,13 +10,27 @@ def rm_next(text):
         else:
             return text
 
-
 if __name__ == '__main__':    
-    file_info = open('files_composer.txt', 'a')
-    pdf_files = [rm_next(f) for f in file_info if rm_next(f).endswith(".pdf")]
+    file_info = open('files_composer.txt', 'r')
+    i = 0
+    name = '' 
+    path = '' 
+    pdf_files = []
+    for f in file_info:
+        i+=1
+        if i == 1:
+            path = rm_next(f)
+        elif i == 2:
+            name = rm_next(f)
+        elif rm_next(f).endswith(".pdf"):
+            pdf_files.append(rm_next(f))
+    file_info.close()
     merger = PdfFileMerger()
-
     for filename in pdf_files:
-        merger.append(PdfFileReader(os.path.join(rm_next(file_info[0]), filename), "rb"))
-
-    merger.write(os.path.join(rm_next(file_info[0]), rm_next(file_info[1])))
+        print('Adicionando: ', filename)
+        merger.append(PdfFileReader(filename), "rb")
+    print('Criando aqrquivo: ', os.path.join(path, name))
+    merger.write(os.path.join(path, name))
+    for filename in pdf_files:
+        print('Excuindo: ', filename)
+        os.remove(filename)
